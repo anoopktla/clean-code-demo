@@ -20,16 +20,12 @@ public class SentenceController {
   @GetMapping("/text/correctedsentences")
   public List<String> correctSentence(@RequestParam String input) {
     OpenAIResponse response = openAIService.correctSentence(input);
-    return response.getChoices().stream()
-        .map(c -> c.getText().strip())
-        .collect(Collectors.toList());
+    return response.getChoices().stream().map(choices -> choices.getText().strip()).toList();
   }
 
   @GetMapping("/text/translatedsentences")
   public List<String> translatedSentence(@RequestParam String input) {
     OpenAIResponse response = openAIService.translatedSentence(input);
-    return response.getChoices().stream()
-        .map(choice -> choice.getText().strip())
-        .collect(Collectors.toList());
+    return response.getChoices().stream().map(choice -> choice.getText().strip()).toList();
   }
 }
