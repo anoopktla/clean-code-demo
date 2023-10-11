@@ -1,6 +1,5 @@
 package com.pumex.demo.models;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 import java.util.Date;
@@ -13,9 +12,7 @@ public class OpenAIResponse {
     private String object;
     private Date creation;
     private String model;
-    @JsonProperty("choices")
-    private List<Choices> choicesList;
-    @JsonProperty("usage")
+    private List<Choices> choices;
     private Usage usage;
 
 }

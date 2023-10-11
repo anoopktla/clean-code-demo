@@ -4,6 +4,8 @@ package com.pumex.demo;
 import com.google.cloud.vision.v1.AnnotateImageResponse;
 import com.google.cloud.vision.v1.EntityAnnotation;
 import com.google.cloud.vision.v1.Feature.Type;
+
+import java.time.Period;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -27,7 +29,7 @@ public class VisionController {
 
     @Autowired private ResourceLoader resourceLoader;
 
-      private CloudVisionTemplate cloudVisionTemplate ;
+      /*@Autowired*/ private CloudVisionTemplate cloudVisionTemplate;
 
     /**
      * This method downloads an image from a URL and sends its contents to the Vision API for label
@@ -56,7 +58,6 @@ public class VisionController {
 
         map.addAttribute("annotations", imageLabels);
         map.addAttribute("imageUrl", imageUrl);
-
         return new ModelAndView("result", map);
     }
 

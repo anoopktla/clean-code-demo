@@ -1,8 +1,8 @@
 package com.pumex.demo.service;
 
-import com.pumex.demo.models.OpenAIConstants;
 import com.pumex.demo.models.OpenAIRequest;
 import com.pumex.demo.models.OpenAIResponse;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -14,16 +14,13 @@ import org.springframework.web.client.RestTemplate;
 import static com.pumex.demo.models.OpenAIConstants.*;
 
 @Service
+@RequiredArgsConstructor
 public class OpenAIService {
 
     @Value("${openai.api.token}")
     private String token;
 
-    private RestTemplate restTemplate;
-
-    public OpenAIService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
+    private final RestTemplate restTemplate;
 
     public OpenAIResponse correctSentence(String textInput) {
         ResponseEntity<OpenAIResponse> openAIResponseResponseEntity = restTemplate.exchange(OPEN_API_URL, HttpMethod.POST,
@@ -37,29 +34,35 @@ public class OpenAIService {
         return openAIResponseResponseEntity.getBody();
     }
 
+    private String getName(String name) {
+        if (name.length() == 1) return "success";
+        return "failed";
+    }
+
     private HttpEntity<OpenAIRequest> getHttpRequestEntity(String text) {
-        OpenAIRequest openAiRequest = new OpenAIRequest();
-        openAiRequest.setModel(MODEL);
+        OpenAIRequest openAiRequest = getARequest();
         openAiRequest.setPrompt(SPELLING_GRAMMAR_CORRECTION + text);
-        openAiRequest.setFrequency_penalty(0);
-        openAiRequest.setPresence_penalty(0);
         return new HttpEntity<>(openAiRequest, getHeaders());
     }
 
     private HttpEntity<OpenAIRequest> getHttpRequestEntityForTranslation(String text) {
-        OpenAIRequest openAiRequest = new OpenAIRequest();
-        openAiRequest.setModel(MODEL);
+        OpenAIRequest openAiRequest = getARequest();
         openAiRequest.setPrompt(TRANSLATE_TO_ENGLISH + text);
+        return new HttpEntity<>(openAiRequest, getHeaders());
+    }
+
+    private OpenAIRequest getARequest() {
+        OpenAIRequest openAiRequest = new OpenAIRequest();
+        openAiRequest.setModel(TEXT_DAVINCI_003);
         openAiRequest.setFrequency_penalty(0);
         openAiRequest.setPresence_penalty(0);
-        return new HttpEntity<>(openAiRequest, getHeaders());
+        return openAiRequest;
     }
 
 
     private HttpHeaders getHeaders() {
         HttpHeaders headers = new HttpHeaders();
-        headers.add(OpenAIConstants.AUTHORIZATION, "Bearer " + token);
+        headers.setBearerAuth(token);
         return headers;
-
     }
 }
